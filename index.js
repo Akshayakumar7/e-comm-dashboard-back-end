@@ -98,7 +98,9 @@ app.get("/products", async (req, resp) => {
 
 app.get("/users", async (req, resp) => {
     try {
-        const allUsers = await users.find();
+        // Exclude the 'password' field from the query result
+        const allUsers = await users.find({}, { password: 0 });
+
         if (allUsers.length > 0) {
             resp.send(allUsers);
         } else {
@@ -108,6 +110,7 @@ app.get("/users", async (req, resp) => {
         resp.status(500).send({ error: "Internal Server Error" });
     }
 });
+
 
 app.delete("/delete/:id", async (req, resp) => {
     let result = await Product.deleteOne({ _id: req.params.id });
