@@ -96,6 +96,19 @@ app.get("/products", async (req, resp) => {
     }
 });
 
+app.get("/users", async (req, resp) => {
+    try {
+        const allUsers = await users.find();
+        if (allUsers.length > 0) {
+            resp.send(allUsers);
+        } else {
+            resp.send({ result: "No Users found" });
+        }
+    } catch (error) {
+        resp.status(500).send({ error: "Internal Server Error" });
+    }
+});
+
 app.delete("/delete/:id", async (req, resp) => {
     let result = await Product.deleteOne({ _id: req.params.id });
     resp.send(result)
@@ -130,9 +143,7 @@ app.get("/search/:key", async (req, resp) => {
         const result = await Product.find({
             "$or": [
                 { name: { $regex: new RegExp(req.params.key, 'i') } },
-                {
-                    company: { $regex: new RegExp(req.params.key, 'i') } 
-                }
+                { company: { $regex: new RegExp(req.params.key, 'i') } }
             ]
         });
         resp.send(result);
